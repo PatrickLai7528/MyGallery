@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Hello!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../styles/semantic.min.css">
+	<link rel="stylesheet" href="../styles/reset.css">
+	<link rel="stylesheet" href="../styles/photo.css">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+
+	<script>
+		$(function () {
+			$('img').click(function () {
+				//console.log(this.src);
+				// toWindotStorage(this.src);
+				localStorage['imgSrc'] = this.src;
+				$(location).attr('href', '/edit');
+			});
+			$("#logout-button").click(function () {
+				$.ajax({
+					url: "http://localhost:3000/logout",
+					type: "GET",
+					success: function (response) {
+						response = JSON.parse(response);
+						console.log(response);
+						if (response.isValid) {
+							document.cookie = "token=" + response.token + ";"
+							$(location).attr('href', '/');
+						}
+					}
+				})
+			})
+		});
+	</script>
+</head>
+
+<body>
+	<header>
+		<img class="logo" src="../images/logo.jpg" alt="heart" />
+		<h1 class="heading">Gallery of Korea Food</h1>
+
+		<button class="ui blue button" id="logout-button">登出</button>
+	</header>
+	<main>
+		<section class="leading">
+			<p class="leading-bigtext">Hello, Seoul</p>
+		</section>
+		<section class="cards">
+			<article>
+				<img id="img-1" class="article-img" src="../images/1-720-960.jpg" />
+				<h1 class="article-title">
+					玉米餅 @明洞地鐵站5號出口
+				</h1>
+			</article>
+			<article>
+				<img id="img-2" class="article-img" src="../images/2-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					新村炸雞 @東大門
+				</h1>
+			</article>
+			<article>
+				<img id="img-3" class="article-img" src="../images/3-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					芝士撻 @明洞
+				</h1>
+			</article>
+			<article>
+				<img id="img-4" class="article-img" src="../images/4-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					脆的炸粉團 @三清洞路上的小店
+				</h1>
+			</article>
+			<article>
+				<img id="img-5" class="article-img" src="../images/5-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					部隊鍋 @明洞
+				</h1>
+			</article>
+			<article>
+				<img id="img-6" class="article-img" src="../images/6-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					韓牛 @某個街市上面(忘了
+				</h1>
+			</article>
+			<article>
+				<img id="img-7" class="article-img" src="../images/7-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					我最愛的米腸 @弘大
+				</h1>
+			</article>
+			<article>
+				<img id="img-8" class="article-img" src="../images/8-720-960.jpg" alt=" " />
+				<h1 class="article-title">
+					Isaac @明洞
+				</h1>
+			</article>
+			<article>
+				<img id="img-9" class="article-img" src="../images/9.jpg" alt=" " />
+				<h1 class="article-title">
+					雪龍湯 @梨花女子大學
+				</h1>
+			</article>
+		</section>
+	</main>
+</body>
+
+</html>

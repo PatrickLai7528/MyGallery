@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="./js/jquery.js" type="text/javascript"></script>
+	<script src="./js/index.js" type="text/javascript"></script>
+	<script src="./js/semantic.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="./styles/semantic.min.css">
+	<link rel="stylesheet" href="./styles/reset.css">
+	<link rel="stylesheet" href="./styles/index.css">
+	<script>
+		window.onload = () => {
+			main()
+		}
+	</script>
+</head>
+<body class="container">
+<h3 class="ui block header gallery-header">
+	Welcome to My Gallery
+</h3>
+<nav></nav>
+<main>
+	<div class="login-wrapper">
+		<div class="login-content">
+			<div id="login-form" class="ui inverted segment">
+				<div class="ui inverted tiny error form">
+					<div class="two fields">
+						<div id="login-username-input-field" class="field">
+							<label>Username</label>
+							<input id="login-username-input" placeholder="username" type="text">
+						</div>
+						<div id="login-password-input-field" class="field">
+							<label>Password</label>
+							<input id="login-password-input" placeholder="Password" type="password">
+						</div>
+					</div>
+					<button id="login-confirm" class="ui teal button">Login</button>
+					<button id="to-sign-up" class="ui yellow button">Sign Up</button>
+					<!--<div id="login-confirm" class="ui submit tiny button">Login</div>-->
+				</div>
+			</div>
+			<div id="signup-form" class="ui inverted segment">
+				<div class="ui inverted tiny error form">
+					<div class="two fields">
+						<div id="signup-username-input-field" class="field">
+							<label>Username</label>
+							<input id="signup-username-input" placeholder="enter your username" type="text">
+						</div>
+						<div id="signup-password-input-field" class="field">
+							<label>Password</label>
+							<input id="signup-password-input" placeholder="enter your password" type="password">
+						</div>
+						<div id="signup-confirm-password-input-field" class="field">
+							<label>Password</label>
+							<input id="signup-confirm-password-input" placeholder="enter your password again"
+							       type="password">
+						</div>
+					</div>
+					<button id="signup-confirm" class="ui teal button">Sign Up</button>
+					<button id="to-login" class="ui yellow button">I have account</button>
+					
+				</div>
+			</div>
+			<!--<div class="ui label">-->
+			<!--Fun-->
+			<!--</div>-->
+			<!--<div class="inline field form-input">-->
+			<!--<div class="ui right pointing label">-->
+			<!--Username Please~-->
+			<!--</div>-->
+			<!--<input type="text">-->
+			<!--</div>-->
+			<!--<div class="inline field  form-input">-->
+			<!--<div class="ui right pointing label">-->
+			<!--And Your Password~-->
+			<!--</div>-->
+			<!--<input type="password">-->
+			<!--</div>-->
+			<!--<form id="login-form">-->
+			<!--Username:<br>-->
+			<!--<input id="login-username" type="text" name="password"><br>-->
+			<!--Password:<br>-->
+			<!--<input id="login-password" type="password" name="password"><br>-->
+			<!--&lt;!&ndash;<a class="form-confirm" href="./pages/photo.html">進入</a>&ndash;&gt;-->
+			<!--<button id="login-confirm" class="form-confirm">Login</button>-->
+			<!--<button id="to-sign-up" class="form-confirm">To Sign Up</button>-->
+			<!--</form>-->
+			<!--<form id="signup-form">-->
+			<!--Username:<br>-->
+			<!--<input id="signup-username" type="text" name="username"><br>-->
+			<!--Password:<br>-->
+			<!--<input id="signup-password" type="password" name="password"><br>-->
+			<!--Confirm Password:<br>-->
+			<!--<input id="signup-confirm-password" type="password" name="confirm password"><br>-->
+			<!--<button id="signup-confirm" class="form-confirm">Sign Up</button>-->
+			<!--<button id="to-login" class="form-confirm">To Login</button>-->
+			<!--</form>-->
+		</div>
+	</div>
+</main>
+<aside></aside>
+<!--<footer>Footer</footer>-->
+</body>
+</html>

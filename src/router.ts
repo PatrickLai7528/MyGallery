@@ -1,0 +1,146 @@
+import * as BodyParser from "body-parser";
+import ImageService from "./service/ImageService";
+import User from "./entity/User";
+import UserService from "./service/UserService";
+import { Request, Response, Router } from "express";
+const jwt = require("jsonwebtoken");
+const secret = "SUPER_GALLERY";
+
+const router: Router = Router();
+const userService = new UserService();
+const imageService = new ImageService();
+
+/**
+ * @param {Request} req
+ * @param {Response} res
+ * @param {string} url
+ */
+function checkToken(
+  req: Request,
+  res: Response,
+  url: string | null,
+  errorUrl: string = "/redirect"
+): User | null {
+  const token: string | undefined = req.cookies.token;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, secret);
+      if (decoded.isLogin) {
+        if (url) {
+          res.sendfile(url);
+        } else {
+          return new User(decoded.username, decoded.password);
+        }
+      } else {
+        res.redirect(errorUrl);
+      }
+    } catch (err) {
+      console.log(err);
+      res.redirect(errorUrl);
+      return null;
+    }
+  }
+  return null;
+}
+
+router.get("/redirect", (req: Request, res: Response) => {
+  res.sendfile("public/pages/redirect.html");
+});
+
+router.get("/index", (req: Request, res: Response) => {
+  res.sendfile("public/index.html");
+});
+
+router.get("/photo", (req: Request, res: Response) => {
+  checkToken(req, res, "public/pages/photo.html");
+});
+
+router.get("/edit", (req: Request, res: Response) => {
+  checkToken(req, res, "public/pages/edit.html");
+});
+
+router.get("/logout", (req: Request, res: Response) => {
+  const user: User | null = checkToken(req, res, null);
+
+  if (!user) {
+    res.redirect("public/pages/redirect.html");
+  } else {
+    const token = jwt.sign(
+      {
+        loginTime: Date.now(),
+        username: user.getUsername(),
+        password: user.getPassword(),
+        isLogin: false
+      },
+      secret,
+      { expiresIn: "1h" }
+    );
+    res.end(
+      JSON.stringify({
+        isValid: true,
+        message: "logout success",
+        token: token
+      })
+    );
+  }
+});
+
+router.get("/login/:username/:password", (req: Request, res: Response) => {
+  let username = req.params.username;
+  let pw = req.params.password;
+
+  userService
+    .login(username, pw)
+    .then((result: string) => {
+      const token = jwt.sign(
+        {
+          loginTime: Date.now(),
+          username: username,
+          password: pw,
+          isLogin: true
+        },
+        secret,
+        { expiresIn: "1h" }
+      );
+      res.end(
+        JSON.stringify({
+          isValid: true,
+          message: "login success",
+          token: token
+        })
+      );
+    })
+    .catch(error => {
+      res.end(JSON.stringify({ isValid: false, message: "login fail" }));
+    });
+});
+
+router.post("/signup/:username/:password", (req: Request, res: Response) => {
+  let username = req.params.username;
+  let pw = req.params.password;
+  userService
+    .signUp(username, pw)
+    .then((result: string) => {
+      res.end(JSON.stringify({ isValid: true, message: "sigup success" }));
+    })
+    .catch(error => {
+      console.log(error);
+      res.end(JSON.stringify({ isValid: false, messsage: "sigup fail" }));
+    });
+});
+
+router.post("/upload/image/", BodyParser.json(), function(
+  req: Request,
+  res: Response
+) {
+  const base64Image = req.body.image;
+  imageService
+    .upload(base64Image)
+    .then((imageName: string) => {
+      res.end(JSON.stringify("upload success"));
+    })
+    .catch(error => {
+      res.end(JSON.stringify(error));
+    });
+});
+export default router;

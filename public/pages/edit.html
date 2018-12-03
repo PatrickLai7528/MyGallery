@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Editor</title>
+	<script src="./../js/jquery.js" type="text/javascript"></script>
+	<script src="./../js/edit.js" type="text/javascript"></script>
+	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">-->
+	<link rel="stylesheet" href="../styles/buttons.css">
+	<link rel="stylesheet" href="../styles/reset.css">
+	<link rel="stylesheet" href="../styles/edit.css">
+
+	<script>
+		window.onload = () => {
+			main()
+		}
+	</script>
+</head>
+
+<body>
+	<header>
+		<img class="logo" src="../images/logo.jpg" alt="heart" />
+		<h1 class="heading">Gallery of Korea Food</h1>
+		<section class="operations">
+			<a id="logout-button" href="#" class="button button-pill button-flat-action smaller-button">登出</a>
+			<a id="op-bigger" href="#" class="button button-pill button-flat-primary smaller-button">Bigger</a>
+			<a id="op-smaller" href="#" class="button button-pill button-flat-primary smaller-button">Smaller</a>
+			<a id="op-image-move-up" href="#" class="button button-pill button-flat-primary">Up</a>
+			<a id="op-image-move-down" href="#" class="button button-pill button-flat-primary">Down</a>
+			<a id="op-image-move-left" href="#" class="button button-pill button-flat-primary">Left</a>
+			<a id="op-image-move-right" href="#" class="button button-pill button-flat-primary">Right</a>
+
+			<a id="op-text" href="#" class="button button-pill button-flat-action smaller-button">Text</a>
+			<input id="op-text-content" type="text" size="5" placeholder="content" />
+			<input id="op-text-size" type="text" size="5" placeholder="font size" />
+			<a id="op-text-move-up" href="#" class="button button-pill button-flat-action">Up</a>
+			<a id="op-text-move-down" href="#" class="button button-pill button-flat-action">Down</a>
+			<a id="op-text-move-left" href="#" class="button button-pill button-flat-action">Left</a>
+			<a id="op-text-move-right" href="#" class="button button-pill button-flat-action">Right</a>
+			<a id="op-pencil" href="#" class="button button-pill button-flat-highlight smaller-button">Pencil</a>
+			<input id="op-color-picker" type="color" size="5" style="max-height: 17px" />
+
+			<a id="op-filter" href="#" class="button button-pill button-flat-caution smaller-button">Filter</a>
+			<a id="op-filter-gray" href="#" class="button button-pill button-flat-caution smaller-button">Gray</a>
+			<a id="op-filter-reverse" href="#" class="button button-pill button-flat-caution smaller-button">Reverse</a>
+			<a id="op-filter-blur" href="#" class="button button-pill button-flat-caution smaller-button">Blur</a>
+			<a id="op-filter-black" href="#" class="button button-pill button-flat-caution smaller-button">Black</a>
+			<a id="op-filter-mosaic" href="#" class="button button-pill button-flat-caution smaller-button">Mosaic</a>
+
+			<a id="op-composition" href="#" class="button button-pill button-flat-royal smaller-button">Composition</a>
+			<a id="op-composition-move-up" href="#" class="button button-pill button-flat-royal smaller-button">Up</a>
+			<a id="op-composition-move-down" href="#" class="button button-pill button-flat-royal smaller-button">Down</a>
+			<a id="op-composition-move-left" href="#" class="button button-pill button-flat-royal smaller-button">Left</a>
+			<a id="op-composition-move-right" href="#" class="button button-pill button-flat-royal smaller-button">Right</a>
+			<a id="op-reset" href="#" class="button button-pill button-flat smaller-button">Reset</a>
+			<a id="op-save" href="#" class="button button-pill button-flat smaller-button">Save</a>
+
+			<input id="op-upload" type="file" name="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" multiple>
+		</section>
+	</header>
+
+	<div class="main-content">
+		<ul class="thumbnail-list">
+			<li class="thumbnail-item">
+				<a id="1" href="./../images/1.jpg">
+					<img class="thumbnail-image" src="./../images/1.jpg" alt="Barry the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="2" href="./../images/2.jpg">
+					<img class="thumbnail-image" src="./../images/2.jpg" alt="Robin the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="3" href="./../images/3.jpg">
+					<img class="thumbnail-image" src="./../images/3.jpg" alt="Maurice the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="4" href="./../images/4.jpg">
+					<img class="thumbnail-image" src="./../images/4.jpg" alt="Lesley the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="5" href="./../images/5.jpg">
+					<img class="thumbnail-image" src="./../images/5.jpg" alt="Barbara the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="6" href="./../images/6.jpg">
+					<img class="thumbnail-image" src="./../images/6.jpg" alt="Barbara the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="7" href="./../images/7.jpg">
+					<img class="thumbnail-image" src="./../images/7.jpg" alt="Barbara the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="8" href="./../images/8.jpg">
+					<img class="thumbnail-image" src="./../images/8.jpg" alt="Barbara the Otter">
+				</a>
+			</li>
+			<li class="thumbnail-item">
+				<a id="9" href="./../images/9.jpg">
+					<img class="thumbnail-image" src="./../images/9.jpg" alt="Barbara the Otter">
+				</a>
+			</li>
+		</ul>
+		<div class="detail-image-container">
+			<div class="detail-image-frame" data-image-role="frame">
+				<!--<img id="big-image" class="detail-image" data-image-role="target" src="./../images/1.jpg" alt="">-->
+				<div id="canvas-wrapper">
+					<canvas id="canvas"></canvas>
+					<canvas id="text-canvas" style="display:none;margin:0 auto;border:1px solid #aaa;"></canvas>
+					<canvas id="composition-canvas" style="display:none;margin:0 auto;border:1px solid #aaa;"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--<div id="canvasDiv">-->
+	<!--<canvas id="canvas"></canvas>-->
+	<!--</div>-->
+
+</body>
+
+</html>

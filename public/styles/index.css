@@ -1,0 +1,78 @@
+body {
+    font-family: Microsoft JhengHei, monospace;
+    background: url('../images/index_bg.jpg') center #333 no-repeat;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+    .container {
+        display: grid;
+        grid-template-columns: 200px 1fr 200px;
+        grid-template-rows: auto 1fr auto;
+
+    }
+}
+
+.gallery-header {
+    grid-column: span 3;
+    padding: 30px;
+    text-align: center;
+    font-size: 1.4em;
+    alignment: center;
+    position: relative;
+    margin: 20px;
+    border-radius: 10px;
+    border: 60px;
+    /*border: 3px solid white;*/
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    max-height: 500px;
+    border-radius: 10px;
+}
+
+nav {
+    padding: 20px;
+}
+
+aside {
+    padding: 20px;
+}
+
+footer {
+    grid-column: span 3;
+    padding: 30px;
+    text-align: center;
+    font-size: 1.4em;
+    background-color: #690;
+    color: white;
+}
+
+.login-wrapper {
+    display: flex;
+    align-items: center; /*設定垂直置中*/
+    justify-content: center;
+    color: white;
+    height: 100%;
+    text-align: center;
+}
+
+.login-content {
+    line-height: 30px;
+    color: white;
+}
+
+.form-confirm {
+    color: white;
+}
+
+.form-input {
+    margin: 10px;
+}
