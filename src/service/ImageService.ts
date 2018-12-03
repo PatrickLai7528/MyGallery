@@ -48,13 +48,10 @@ export default class ImageService {
   }
 
   /**
-   *
-   *
-   * @param {string} base64Image
-   * @returns {Promise<string>}
-   * @memberof ImageService
+   * @param username
+   * @param base64Image
    */
-  public upload(base64Image: string): Promise<string> {
+  public upload(username: string, base64Image: string): Promise<string> {
     let imgData = base64Image.replace(/^data:image\/\w+;base64,/, "");
 
     let dataBuffer = new Buffer(imgData, "base64");
@@ -64,15 +61,54 @@ export default class ImageService {
       this.fileBasePath + "/" + this.hashImageName(base64Image) + ".png";
 
     return new Promise((resolve, reject) => {
-      fs.writeFile(imageName, dataBuffer, function(err) {
+      // write to file
+      fs.writeFile(imageName, dataBuffer, err => {
         if (err) {
+          // reject(err);
           reject(err);
         } else {
-          console.log(imageName);
-          resolve(imageName);
+          //insert to database
+          if (!this.database) {
+            reject(new Error("database is not ready"));
+          } else {
+            this.database
+              .insertImage(username, imageName)
+              .then((str: string) => {
+                resolve(str);
+              })
+              .catch(err => {
+                reject(err);
+              });
+          }
         }
       });
     });
   }
-}
 
+  // private toBase64(imagePath: string, callback): void {
+  //   let fileReader = new FileReader();
+  //   fileReader.onload = (e: any) => {
+  //     console.log("in on load");
+  //     let base64 = e.target.result;
+  //     callback(base64);
+  //   };
+  //   fileReader.readAsDataURL(blob);
+  // }
+
+  public getAllImage(username: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      if (!this.database) {
+        reject(new Error("database is not ready"));
+      } else {
+        this.database
+          .getAllImage(username)
+          .then((images: string[]) => {
+            resolve(images);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      }
+    });
+  }
+}

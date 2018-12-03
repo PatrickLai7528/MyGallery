@@ -131,9 +131,49 @@ export default class Database {
       }
     });
   }
+
+  public insertImage(username: string, imagePath: string): Promise<string> {
+    let sql = "INSERT INTO g_image(username, image_path) VALUES(?, ? )";
+    let params = [username, imagePath];
+    return new Promise((resolve, reject) => {
+      if (!this.connection) {
+        reject(new Error("Databse is not ready"));
+      } else if (!username || !imagePath) {
+        reject(new Error("Argument check failed"));
+      } else {
+        this.connection.query(sql, params, (error, result) => {
+          if (error) {
+            console.log("[SELECT ERROR] - ", error.message);
+            reject(error);
+          }
+          // onSuccess(result);
+          resolve(result);
+        });
+      }
+    });
+  }
+
+  public getAllImage(username: string): Promise<string[]> {
+    let sql = "select * from g_image where username = ?";
+    let params = [username];
+    return new Promise((resolve, reject) => {
+      if (!this.connection) {
+        reject(new Error("Databse is not ready"));
+      } else if (!username) {
+        reject(new Error("Argument check failed"));
+      } else {
+        this.connection.query(sql, params, (error, result) => {
+          if (error) {
+            console.log("[SELECT ERROR] - ", error.message);
+            reject(error);
+          }
+          let imageList: string[] = [];
+          for (let i = 0; i < result.length; i++) {
+            imageList.push(result[i].image_path);
+          }
+          resolve(imageList);
+        });
+      }
+    });
+  }
 }
-
-// module.exports = DataBase;
-
-// let databse = DataBase.connect();
-// console.log(databse);

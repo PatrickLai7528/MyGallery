@@ -14,8 +14,6 @@
 	<script>
 		$(function () {
 			$('img').click(function () {
-				//console.log(this.src);
-				// toWindotStorage(this.src);
 				localStorage['imgSrc'] = this.src;
 				$(location).attr('href', '/edit');
 			});
@@ -33,6 +31,28 @@
 					}
 				})
 			})
+			
+			// get image from backend
+			$.ajax({
+				type: "GET",
+				url: "http://localhost:3000/images",
+				success: function (response) {
+					console.log(response);
+					let imageList = JSON.parse(response);
+					console.log(imageList);
+					let $section = $("#image-section")[0];
+					console.log($section);
+					for (let i = 0; i < imageList.length; i++) {
+						let article = document.createElement("article");
+						let img = document.createElement("img");
+						img.setAttribute("id", "img-" + 10 + i);
+						img.setAttribute("src", "./showimage/" + imageList[i].replace("./upload_images/", ""));
+						img.classList.add("article-img");
+						article.appendChild(img);
+						$section.appendChild(article);
+					}
+				}
+			})
 		});
 	</script>
 </head>
@@ -48,7 +68,7 @@
 		<section class="leading">
 			<p class="leading-bigtext">Hello, Seoul</p>
 		</section>
-		<section class="cards">
+		<section id="image-section" class="cards">
 			<article>
 				<img id="img-1" class="article-img" src="../images/1-720-960.jpg" />
 				<h1 class="article-title">

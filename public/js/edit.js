@@ -657,14 +657,17 @@ let main = () => {
 			//读取完成
 			reader.onload = function (e) {
 				let base64Image = e.target.result;
-				// console.log(base64Image);
-				// isCompositionMode = true;
-				// doComposition(base64Image);
 				insertImage(base64Image);
-				// insertImage(base64Image);
-				$.post("http://127.0.0.1:3000/upload/image", {
-					image: base64Image
-				})
+				// $.post("http://127.0.0.1:3000/upload/image", {
+				// 	image: base64Image
+				// })
+				$.ajax({
+					url: "http://localhost:3000/upload/image",
+					type: "POST",
+					data: {
+						image: base64Image
+					}
+				});
 			};
 			reader.readAsDataURL(selectedFile);
 		}
@@ -695,28 +698,10 @@ let main = () => {
 
 		thumbnailList.appendChild(newLi);
 		console.log(thumbnailList.innerHTML)
-
-		// console.log(imageNumber);
-		// let newImageHtml = '<li class="thumbnail-item">\n' +
-		// 	'\t\t\t<a id="' + imageNumber + '" href="' + base64Image + '">\n' +
-		// 	'\t\t\t\t<img class="thumbnail-image" src="' + base64Image + '" alt="Barbara the Otter">\n' +
-		// 	'\t\t\t</a>\n' +
-		// 	'\t\t</li>';
-		// setEventListener();
 		$('#' + imageNumber).click((e) => {
 			let imageSrc = $(".thumbnail-image")[imageNumber - 1].src;
 			onImageChange(e, imageSrc);
 		});
-		// thumbnailList.innerHTML += newImageHtml;
-		// let image = new Image();
-		// image.src = base64Image;
-		// image.onload = () => {
-		// 	let newImageHtml = '<li class="thumbnail-item">\n' +
-		// 		'\t\t\t<a id="9" href="./../images/' + thumbnailItems.length + '.jpg">\n' +
-		// 		'\t\t\t\t<img class="thumbnail-image" src="' + base64Image + '" alt="Barbara the Otter">\n' +
-		// 		'\t\t\t</a>\n' +
-		// 		'\t\t</li>'
-		// }
 	};
 
 	let disableAllButtons = () => {

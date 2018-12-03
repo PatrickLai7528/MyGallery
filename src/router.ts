@@ -5,7 +5,7 @@ import UserService from "./service/UserService";
 import { Request, Response, Router } from "express";
 const jwt = require("jsonwebtoken");
 const secret = "SUPER_GALLERY";
-
+const fs = require("fs");
 const router: Router = Router();
 const userService = new UserService();
 const imageService = new ImageService();
@@ -41,6 +41,18 @@ function checkToken(
     }
   }
   return null;
+}
+
+function getUsernameFromToken(token: string): string {
+  try {
+    const decoded = jwt.verify(token, secret);
+    if (decoded.isLogin) {
+      return decoded.username;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  return "";
 }
 
 router.get("/redirect", (req: Request, res: Response) => {
@@ -129,18 +141,57 @@ router.post("/signup/:username/:password", (req: Request, res: Response) => {
     });
 });
 
-router.post("/upload/image/", BodyParser.json(), function(
-  req: Request,
-  res: Response
-) {
-  const base64Image = req.body.image;
+router.post(
+  "/upload/image/",
+  BodyParser.json(),
+  (req: Request, res: Response) => {
+    const username: string = getUsernameFromToken(req.cookies.token);
+    const base64Image = req.body.image;
+    imageService
+      .upload(username, base64Image)
+      .then((imageName: string) => {
+        res.end(JSON.stringify("upload success"));
+      })
+      .catch(error => {
+        res.end(JSON.stringify(error));
+      });
+  }
+);
+
+router.get("/images/", BodyParser.json(), (req: Request, res: Response) => {
+  const username: string = getUsernameFromToken(req.cookies.token);
   imageService
-    .upload(base64Image)
-    .then((imageName: string) => {
-      res.end(JSON.stringify("upload success"));
+    .getAllImage(username)
+    .then((images: string[]) => {
+      // console.log(images);
+      res.end(JSON.stringify(images));
     })
-    .catch(error => {
-      res.end(JSON.stringify(error));
+    .catch(err => {
+      res.end(JSON.stringify(err));
     });
 });
+
+router.get(
+  "/showimage/:imagePath",
+  BodyParser.json(),
+  (req: Request, res: Response) => {
+    let imagePath = req.params.imagePath;
+    console.log(imagePath);
+    imagePath = "./upload_images/" + imagePath;
+    res.writeHead(200, { "Content-Type": "image/jpeg" });
+    if (req.url !== "/favicon.ico") {
+      fs.readFile(imagePath, "binary", function(err, file) {
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          console.log("输出文件");
+          res.write(file, "binary");
+          res.end();
+        }
+      });
+      console.log("继续执行");
+    }
+  }
+);
 export default router;
