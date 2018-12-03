@@ -85,16 +85,6 @@ export default class ImageService {
     });
   }
 
-  // private toBase64(imagePath: string, callback): void {
-  //   let fileReader = new FileReader();
-  //   fileReader.onload = (e: any) => {
-  //     console.log("in on load");
-  //     let base64 = e.target.result;
-  //     callback(base64);
-  //   };
-  //   fileReader.readAsDataURL(blob);
-  // }
-
   public getAllImage(username: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
       if (!this.database) {

@@ -123,7 +123,7 @@ router.get("/login/:username/:password", (req: Request, res: Response) => {
       );
     })
     .catch(error => {
-      res.end(JSON.stringify({ isValid: false, message: "login fail" }));
+      res.end(JSON.stringify({ isValid: false, message: "Account not match" }));
     });
 });
 
@@ -133,11 +133,11 @@ router.post("/signup/:username/:password", (req: Request, res: Response) => {
   userService
     .signUp(username, pw)
     .then((result: string) => {
-      res.end(JSON.stringify({ isValid: true, message: "sigup success" }));
+      res.end(JSON.stringify({ isValid: true, message: "Sigup Success" }));
     })
     .catch(error => {
       console.log(error);
-      res.end(JSON.stringify({ isValid: false, messsage: "sigup fail" }));
+      res.end(JSON.stringify({ isValid: false, message: "Username repeated" }));
     });
 });
 
