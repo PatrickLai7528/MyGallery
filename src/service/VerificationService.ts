@@ -1,4 +1,10 @@
 var svgCaptcha = require("svg-captcha");
+/**
+ *
+ *
+ * @export
+ * @class VerificationService
+ */
 export default class VerificationService {
     public constructor() {}
     public getCode() {

@@ -100,6 +100,14 @@ export default class ImageService {
             });
         });
     }
+
+    /**
+     *
+     *
+     * @param {string} username
+     * @returns {Promise<TagStatistics>}
+     * @memberof ImageService
+     */
     public countTag(username: string): Promise<TagStatistics> {
         return new Promise((resolve, reject) => {
             this.getAllImage()
@@ -118,7 +126,12 @@ export default class ImageService {
                 });
         });
     }
-
+    /**
+     *
+     *
+     * @returns {Promise<Image[]>}
+     * @memberof ImageService
+     */
     public getAllImage(): Promise<Image[]> {
         return new Promise((resolve, reject) => {
             if (!this.database) {
@@ -135,7 +148,14 @@ export default class ImageService {
             }
         });
     }
-
+    
+    /**
+     *
+     *
+     * @param {string} imagePath
+     * @returns {Promise<string[]>}
+     * @memberof ImageService
+     */
     public getTagOf(imagePath: string): Promise<string[]> {
         return new Promise((resolve, reject) => {
             if (!this.database) {

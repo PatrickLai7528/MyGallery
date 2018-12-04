@@ -134,6 +134,15 @@ export default class Database {
         });
     }
 
+    /**
+     *
+     *
+     * @param {string} username
+     * @param {string} imagePath
+     * @param {string} tags
+     * @returns {Promise<string>}
+     * @memberof Database
+     */
     public insertImage(
         username: string,
         imagePath: string,
@@ -160,6 +169,13 @@ export default class Database {
         });
     }
 
+    /**
+     *
+     *
+     * @param {string} imagePath
+     * @returns {Promise<string[]>}
+     * @memberof Database
+     */
     public getTagOf(imagePath: string): Promise<string[]> {
         let sql = "select * from g_image where image_path = ?";
         let params = [imagePath];
@@ -183,6 +199,12 @@ export default class Database {
         });
     }
 
+    /**
+     *
+     *
+     * @returns {Promise<Image[]>}
+     * @memberof Database
+     */
     public getAllImage(): Promise<Image[]> {
         let sql = "select * from g_image";
         return new Promise((resolve, reject) => {
