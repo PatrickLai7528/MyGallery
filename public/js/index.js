@@ -104,27 +104,33 @@ let main = () => {
     return prefix + "/" + username + "/" + pw;
   };
 
-  let sendLogin = () => {
+  let checkLoginData = () => {
+    console.log("checking");
     let username = $(LOGIN_USERNAME_SELECTOR);
     let pw = $(LOGIN_PASSWORD_SELECTOR);
-
-    if (!USERNAMR_REGEX.test(username.val())) {
+    if (!username.val().match(USERNAMR_REGEX)) {
       username.addClass("error");
       setErrorMessage(
         "Username Error",
         "Only number and alphabet is allowed, 5 to 20 lettes, case sensitive"
       );
-      return;
+      return false;
     }
 
-    if (!PASSWORD_REGEX.test(pw.val())) {
+    if (!pw.val().match(PASSWORD_REGEX)) {
       pw.addClass("error");
       setErrorMessage(
         "Password Error",
         "Only number and alphabet is allowed, 6 to 20 lettes, case sensitive"
       );
-      return;
+      return false;
     }
+    return true;
+  }
+
+  let sendLogin = () => {
+    let username = $(LOGIN_USERNAME_SELECTOR);
+    let pw = $(LOGIN_PASSWORD_SELECTOR);
 
     $.ajax({
       url: generateUrl(username.val(), pw.val(), "login"),
@@ -151,27 +157,27 @@ let main = () => {
     jqMessageContent.text(content);
   };
 
-  let sendSigUp = () => {
+  let checkSignUpData = () => {
+    console.log("checking");
     let username = $(SIGN_UP_USERNAME_SELECTOR);
     let pw = $(SIGN_UP_PASSWORD_SELECTOR);
     let pwAgain = $(SIGN_UP_CONFIRM_PASSWORD_SELECTOR);
-
-    if (!USERNAMR_REGEX.test(username.val())) {
+    if (!username.val().match(USERNAMR_REGEX)) {
       username.addClass("error");
       setErrorMessage(
         "Username Error",
         "Only number and alphabet is allowed, 5 to 20 lettes, case sensitive"
       );
-      return;
+      return false;
     }
 
-    if (!PASSWORD_REGEX.test(pw.val())) {
+    if (!pw.val().match(PASSWORD_REGEX)) {
       pw.addClass("error");
       setErrorMessage(
         "Password Error",
         "Only number and alphabet is allowed, 6 to 20 lettes, case sensitive"
       );
-      return;
+      return false;
     }
 
     if (pw.val() !== pwAgain.val()) {
@@ -180,8 +186,16 @@ let main = () => {
         "Please Confirm Password",
         "Retype your password again carefully"
       );
-      return;
+      return false;
     }
+    return true;
+  }
+
+  let sendSigUp = () => {
+    let username = $(SIGN_UP_USERNAME_SELECTOR);
+    let pw = $(SIGN_UP_PASSWORD_SELECTOR);
+    // let pwAgain = $(SIGN_UP_CONFIRM_PASSWORD_SELECTOR);
+
     $.ajax({
       url: generateUrl(username.val(), pw.val(), "signup"),
       type: "POST",
@@ -239,10 +253,12 @@ let main = () => {
       }
     }
     if (actualCode.toLowerCase() == expectCode) {
-      sendSigUp();
+      if (checkSignUpData()) {
+        sendSigUp();
+        enableLoginForm();
+        disableSignupForm();
+      }
       disableVerificationModal();
-      enableLoginForm();
-      disableSignupForm();
     } else {
       setErrorMessage("Verfication Fail", "Please Look Carefully")
     }
@@ -264,12 +280,16 @@ let main = () => {
 
     $(LOGIN_CONFIRM_SELECTOR).click(e => {
       e.preventDefault();
-      sendLogin();
+      if (checkLoginData()) {
+        sendLogin();
+      }
     });
 
     $(SIGN_UP_CONFIRM_SELECTOR).click(e => {
       e.preventDefault();
-      enableVerificationModal();
+      if (checkSignUpData()) {
+        enableVerificationModal();
+      }
     });
 
     $(LOGIN_PASSWORD_SELECTOR).on("input", e => {
