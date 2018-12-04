@@ -6,7 +6,7 @@ let main = () => {
       let UPLOAD_MODAL_SELECTOR = "#upload-image-modal"
 
       let SEARCH_ICON_SELECTOR = ".search.link.icon"
-      let SEARCH_KEYWORD_SELECTOR = "#search-keyword-input"
+      let SEARCH_KEYWORD_INPUT_SELECTOR = "#search-keyword-input"
 
       let IMAGE_SECTION_SELECTOR = "#image-section";
       let IMAGE_ARTICLE_SELECTOR = "#image-section article"
@@ -33,15 +33,9 @@ let main = () => {
                               if (!tag || !count)
                                     continue;
 
-                              // <div class="red statistic">
-                              // 	<div class="value">
-                              // 		27
-                              // 	</div>
-                              // 	<div class="label">Red </div>
-                              // </div>
-
                               let labelDiv = document.createElement("div");
                               labelDiv.classList.add("label");
+                              labelDiv.setAttribute("style", "font-family: Microsoft JhengHei, monospace;")
                               labelDiv.innerText = tag;
 
                               let valueDiv = document.createElement("div");
@@ -118,6 +112,11 @@ let main = () => {
                         jqImageArticles[i].setAttribute("style", "display:none");
                   }
             }
+            clearSearchInput();
+      }
+
+      let clearSearchInput = () => {
+            $(SEARCH_KEYWORD_INPUT_SELECTOR).val("");
       }
 
       let setEventListener = () => {
@@ -149,7 +148,7 @@ let main = () => {
             });
             $(SEARCH_ICON_SELECTOR).click((e) => {
                   e.preventDefault();
-                  doSearch($(SEARCH_KEYWORD_SELECTOR).val());
+                  doSearch($(SEARCH_KEYWORD_INPUT_SELECTOR).val());
             })
             $(TAG_STATISTICS_SELECTOR).click(e => {
                   e.preventDefault();

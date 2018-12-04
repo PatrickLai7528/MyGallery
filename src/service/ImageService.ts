@@ -4,7 +4,7 @@ import Database from "./../data/DataBase";
 import DataStore from "../data/DataStore";
 import Image from "../entity/Image";
 import TagStatistics from "../entity/TagStatistics";
-import AIService from './AIService';
+import AIService from "./AIService";
 // let request = require("request");
 // let hashlib = require("hashlib");
 // let urllib = require("urllib");
@@ -70,27 +70,33 @@ export default class ImageService {
     let imageName =
       this.fileBasePath + "/" + this.hashImageName(base64Image) + ".png";
     return new Promise((resolve, reject) => {
-      this.aIService.tagOf(base64Image);
-      // write to file
-      fs.writeFile(imageName, dataBuffer, err => {
-        if (err) {
-          // reject(err);
-          reject(err);
-        } else {
-          //insert to database
-          if (!this.database) {
-            reject(new Error("database is not ready"));
-          } else {
-            this.database
-              .insertImage(username, imageName, tags)
-              .then((str: string) => {
-                resolve(str);
-              })
-              .catch(err => {
-                reject(err);
-              });
-          }
+      this.aIService.tagOf(imgData).then((autoTagList: string[]) => {
+        let autoTagSplitBySpace: string = "";
+        for (let autoTag of autoTagList) {
+          autoTagSplitBySpace += " " + autoTag;
         }
+        tags += autoTagSplitBySpace;
+        // write to file
+        fs.writeFile(imageName, dataBuffer, err => {
+          if (err) {
+            // reject(err);
+            reject(err);
+          } else {
+            //insert to database
+            if (!this.database) {
+              reject(new Error("database is not ready"));
+            } else {
+              this.database
+                .insertImage(username, imageName, tags)
+                .then((str: string) => {
+                  resolve(str);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            }
+          }
+        });
       });
     });
   }

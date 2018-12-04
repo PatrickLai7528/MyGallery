@@ -256,6 +256,8 @@ let main = () => {
     });
   };
 
+  clearLoginForm();
+  clearSignupForm
   setEventListenr();
   disableSignupForm();
 };
