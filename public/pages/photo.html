@@ -10,116 +10,111 @@
 	<link rel="stylesheet" href="../styles/reset.css">
 	<link rel="stylesheet" href="../styles/photo.css">
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
-
+	<script src="../js/semantic.min.js" type="text/javascript"></script>
+	<script src="../js/photo.js" type="text/javascript"></script>
 	<script>
-		$(function () {
-			$('img').click(function () {
-				localStorage['imgSrc'] = this.src;
-				$(location).attr('href', '/edit');
-			});
-			$("#logout-button").click(function () {
-				$.ajax({
-					url: "http://localhost:3000/logout",
-					type: "GET",
-					success: function (response) {
-						response = JSON.parse(response);
-						console.log(response);
-						if (response.isValid) {
-							document.cookie = "token=" + response.token + ";"
-							$(location).attr('href', '/');
-						}
-					}
-				})
-			})
-			
-			// get image from backend
-			$.ajax({
-				type: "GET",
-				url: "http://localhost:3000/images",
-				success: function (response) {
-					console.log(response);
-					let imageList = JSON.parse(response);
-					console.log(imageList);
-					let $section = $("#image-section")[0];
-					console.log($section);
-					for (let i = 0; i < imageList.length; i++) {
-						let article = document.createElement("article");
-						let img = document.createElement("img");
-						img.setAttribute("id", "img-" + 10 + i);
-						img.setAttribute("src", "./showimage/" + imageList[i].replace("./upload_images/", ""));
-						img.classList.add("article-img");
-						article.appendChild(img);
-						$section.appendChild(article);
-					}
-				}
-			})
-		});
+		window.onload = () => {
+			main()
+		}
 	</script>
 </head>
 
 <body>
-	<header>
-		<img class="logo" src="../images/logo.jpg" alt="heart" />
-		<h1 class="heading">Gallery of Korea Food</h1>
-
-		<button class="ui blue button" id="logout-button">登出</button>
+	<header style="width: 100%">
+		<img class="logo" src="../images/logo.png" alt="Gallery" />
+		<div class="ui attached menu" style="width: 100%; ">
+			<div class="item" style="padding:5px">
+				<div class="tiny ui orange button">Upload</div>
+				<div class="ui modal">
+					<i class="close icon"></i>
+					<div class="header">
+						Make Your Photo Immortal
+					</div>
+					<div class="content">
+						<div class="ui labeled input">
+							<div class="ui label">
+								Add Your Tag
+							</div>
+							<input id="tag-input" type="text" placeholder="spilt in spaces">
+						</div>
+						<label for="embedpollfileinput" class="ui basic button">
+							<i class="icon user"></i> Choose Image
+							</button>
+						</label>
+						<input type="file" class="inputfile" id="embedpollfileinput" style="visibility:hidden;" />
+					</div>
+				</div>
+			</div>
+			<div class="item" style="padding:5px">
+				<div class="tiny ui teal button">Logout</div>
+			</div>
+			<div class="right menu">
+				<div class="ui right aligned category search item">
+					<div class="ui transparent icon input">
+						<input id="search-keyword-input" class="prompt" type="text" placeholder="Search">
+						<i class="search link icon"></i>
+					</div>
+					<div class="results"></div>
+				</div>
+			</div>
+		</div>
 	</header>
 	<main>
 		<section class="leading">
-			<p class="leading-bigtext">Hello, Seoul</p>
+			<p class="leading-bigtext">Welcome</p>
 		</section>
 		<section id="image-section" class="cards">
 			<article>
 				<img id="img-1" class="article-img" src="../images/1-720-960.jpg" />
-				<h1 class="article-title">
+				<h1 id="img-tag-1" class="article-title">
 					玉米餅 @明洞地鐵站5號出口
 				</h1>
 			</article>
 			<article>
 				<img id="img-2" class="article-img" src="../images/2-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-2" class="article-title">
 					新村炸雞 @東大門
 				</h1>
 			</article>
 			<article>
 				<img id="img-3" class="article-img" src="../images/3-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-4" class="article-title">
 					芝士撻 @明洞
 				</h1>
 			</article>
 			<article>
 				<img id="img-4" class="article-img" src="../images/4-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-4" class="article-title">
 					脆的炸粉團 @三清洞路上的小店
 				</h1>
 			</article>
 			<article>
 				<img id="img-5" class="article-img" src="../images/5-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-5" class="article-title">
 					部隊鍋 @明洞
 				</h1>
 			</article>
 			<article>
 				<img id="img-6" class="article-img" src="../images/6-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-6" class="article-title">
 					韓牛 @某個街市上面(忘了
 				</h1>
 			</article>
 			<article>
 				<img id="img-7" class="article-img" src="../images/7-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-7" class="article-title">
 					我最愛的米腸 @弘大
 				</h1>
 			</article>
 			<article>
 				<img id="img-8" class="article-img" src="../images/8-720-960.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 id="img-tag-8" class="article-title">
 					Isaac @明洞
 				</h1>
 			</article>
 			<article>
 				<img id="img-9" class="article-img" src="../images/9.jpg" alt=" " />
-				<h1 class="article-title">
+				<h1 class="article-title" id="img-tag-9">
 					雪龍湯 @梨花女子大學
 				</h1>
 			</article>

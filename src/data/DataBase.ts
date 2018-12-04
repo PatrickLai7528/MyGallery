@@ -1,6 +1,6 @@
 import * as Mysql from "mysql";
 import User from "./../entity/User";
-
+import Image from "./../entity/Image";
 /**
  *
  *
@@ -132,9 +132,13 @@ export default class Database {
     });
   }
 
-  public insertImage(username: string, imagePath: string): Promise<string> {
-    let sql = "INSERT INTO g_image(username, image_path) VALUES(?, ? )";
-    let params = [username, imagePath];
+  public insertImage(
+    username: string,
+    imagePath: string,
+    tags: string
+  ): Promise<string> {
+    let sql = "INSERT INTO g_image(username, image_path, tags) VALUES(?, ?, ?)";
+    let params = [username, imagePath, tags];
     return new Promise((resolve, reject) => {
       if (!this.connection) {
         reject(new Error("Databse is not ready"));
@@ -153,7 +157,7 @@ export default class Database {
     });
   }
 
-  public getAllImage(username: string): Promise<string[]> {
+  public getAllImage(username: string): Promise<Image[]> {
     let sql = "select * from g_image where username = ?";
     let params = [username];
     return new Promise((resolve, reject) => {
@@ -167,9 +171,9 @@ export default class Database {
             console.log("[SELECT ERROR] - ", error.message);
             reject(error);
           }
-          let imageList: string[] = [];
+          let imageList: Image[] = [];
           for (let i = 0; i < result.length; i++) {
-            imageList.push(result[i].image_path);
+            imageList.push(new Image(result[i].image_path, result[i].tags));
           }
           resolve(imageList);
         });

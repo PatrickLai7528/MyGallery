@@ -3,6 +3,7 @@ import ImageService from "./service/ImageService";
 import User from "./entity/User";
 import UserService from "./service/UserService";
 import { Request, Response, Router } from "express";
+import Image from './entity/Image';
 const jwt = require("jsonwebtoken");
 const secret = "SUPER_GALLERY";
 const fs = require("fs");
@@ -146,9 +147,12 @@ router.post(
   BodyParser.json(),
   (req: Request, res: Response) => {
     const username: string = getUsernameFromToken(req.cookies.token);
-    const base64Image = req.body.image;
+    // console.log(req.body.data);
+    const data = JSON.parse(req.body.data);
+    const tags = data.tags;
+    const base64Image = data.image;
     imageService
-      .upload(username, base64Image)
+      .upload(username, base64Image, tags)
       .then((imageName: string) => {
         res.end(JSON.stringify("upload success"));
       })
@@ -162,7 +166,7 @@ router.get("/images/", BodyParser.json(), (req: Request, res: Response) => {
   const username: string = getUsernameFromToken(req.cookies.token);
   imageService
     .getAllImage(username)
-    .then((images: string[]) => {
+    .then((images: Image[]) => {
       // console.log(images);
       res.end(JSON.stringify(images));
     })
@@ -176,7 +180,7 @@ router.get(
   BodyParser.json(),
   (req: Request, res: Response) => {
     let imagePath = req.params.imagePath;
-    console.log(imagePath);
+    // console.log(imagePath);
     imagePath = "./upload_images/" + imagePath;
     res.writeHead(200, { "Content-Type": "image/jpeg" });
     if (req.url !== "/favicon.ico") {

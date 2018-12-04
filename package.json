@@ -13,13 +13,16 @@
     "@types/es6-shim": "^0.31.38",
     "@types/express": "^4.16.0",
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "crypto": "^1.0.1",
     "express": "^4.16.4",
+    "hashlib": "^1.0.1",
+    "jquery": "^3.3.1",
+    "jsonwebtoken": "^8.3.0",
     "multer": "^1.4.1",
     "mysql": "^2.16.0",
     "nodemon": "^1.18.4",
-    "jsonwebtoken":"^8.3.0",
-    "cookie-parser":"^1.4.3"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/node": "^10.12.3",
