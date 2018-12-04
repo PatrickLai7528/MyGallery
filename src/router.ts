@@ -3,7 +3,8 @@ import ImageService from "./service/ImageService";
 import User from "./entity/User";
 import UserService from "./service/UserService";
 import { Request, Response, Router } from "express";
-import Image from './entity/Image';
+import Image from "./entity/Image";
+import TagStatistics from "./entity/TagStatistics";
 const jwt = require("jsonwebtoken");
 const secret = "SUPER_GALLERY";
 const fs = require("fs");
@@ -174,6 +175,24 @@ router.get("/images/", BodyParser.json(), (req: Request, res: Response) => {
       res.end(JSON.stringify(err));
     });
 });
+
+router.get(
+  "/tagstatistics/",
+  BodyParser.json(),
+  (req: Request, res: Response) => {
+    const username: string = getUsernameFromToken(req.cookies.token);
+    imageService
+      .countTag(username)
+      .then((tagStatistics: TagStatistics) => {
+        // console.log(images);
+        // console.log(tagStatistics.getStatistics());
+        res.end(JSON.stringify([...tagStatistics.getStatistics()]));
+      })
+      .catch(err => {
+        res.end(JSON.stringify(err));
+      });
+  }
+);
 
 router.get(
   "/showimage/:imagePath",

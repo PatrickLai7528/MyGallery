@@ -1,8 +1,8 @@
 export default class Image {
   private path: string;
-  private tags: string[];
+  private tags: string;
 
-  constructor(path: string, tags: string[]) {
+  constructor(path: string, tags: string) {
     this.path = path;
     this.tags = tags;
   }
@@ -11,7 +11,7 @@ export default class Image {
     return this.path;
   }
 
-  public getTags(): string[] {
+  public getTags(): string {
     return this.tags;
   }
 }

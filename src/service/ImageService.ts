@@ -3,6 +3,7 @@ import * as fs from "fs";
 import Database from "./../data/DataBase";
 import DataStore from "../data/DataStore";
 import Image from "../entity/Image";
+import TagStatistics from "../entity/TagStatistics";
 // let request = require("request");
 // let hashlib = require("hashlib");
 // let urllib = require("urllib");
@@ -91,43 +92,24 @@ export default class ImageService {
       });
     });
   }
-
-  // private imageToText(base64Image: string) {
-  //   console.log("fuck you");
-  //   this.call(base64Image);
-  // }
-
-  // private call(base64Image): void {
-  //   const url = "https://api.ai.qq.com/fcgi-bin/vision/vision_imgtotext";
-  //   const appKey = "3IttkQfLv2tmXaM1";
-  //   const data = {
-  //     app_id: "2108872588",
-  //     image: base64Image,
-  //     nonce_str: Math.random(),
-  //     time_stamp: new Date().getTime()
-  //   };
-
-  //   data["sign"] = this.getSign(data, appKey);
-
-  //   request.post({ url: url, body: data, json: true }, response => {
-  //     console.log(response);
-  //   });
-  // }
-
-  // private getSign(data, appKey) {
-  //   // let s = urllib.urlencode(data);
-  //   // s += "&app_key" + appKey;
-  //   // let md5 = hashlib.md5();
-  //   // md5.update(s.encode("utf-8"));
-  //   // let digest = md5.hexdigest();
-  //   // console.log(digest.upper());
-  //   const hash = crypto.createHash("md5");
-  //   hash.update(JSON.stringify(data));
-  //   // let ret = hash.digest("hex");
-  //   // if (ret.length > 30) ret = ret.substr(0, 30);
-  //   // return ret;
-  //   return hash.digest();
-  // }
+  public countTag(username: string): Promise<TagStatistics> {
+    return new Promise((resolve, reject) => {
+      this.getAllImage(username)
+        .then((imageList: Image[]) => {
+          let tagStatistics: TagStatistics = new TagStatistics();
+          for (let image of imageList) {
+            let tags: string[] = image.getTags().split(" ");
+            for (let tag of tags) {
+              tagStatistics.add(tag);
+            }
+          }
+          resolve(tagStatistics);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  }
 
   public getAllImage(username: string): Promise<Image[]> {
     return new Promise((resolve, reject) => {

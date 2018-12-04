@@ -2,12 +2,65 @@ let main = () => {
       let UPLOAD_SELCETOR = ".tiny.ui.orange.button";
       let UPLOAD_BUTTON_SELECTOR = ".inputfile";
       let UPLOAD_TAG_INPUT_SELECTOR = "#tag-input";
-      let MODAL_SELECTOR = ".ui.modal"
+
+      let UPLOAD_MODAL_SELECTOR = "#upload-image-modal"
+
       let SEARCH_ICON_SELECTOR = ".search.link.icon"
       let SEARCH_KEYWORD_SELECTOR = "#search-keyword-input"
+
       let IMAGE_SECTION_SELECTOR = "#image-section";
       let IMAGE_ARTICLE_SELECTOR = "#image-section article"
       let IMAGE_ARTICLE_TAG_SELECTOR = "#img-tag-"
+
+      let TAG_STATISTICS_SELECTOR = ".tiny.ui.yellow.button"
+      let TAG_STATISTICS_MODAL_SELECTOR = "#tag-statistics-modal"
+      let TAG_STATISTICS_ADD_HERE_SELECTOR = "#tag-statistics-add-here"
+
+      let getTagStatistics = () => {
+            $.ajax({
+                  type: "GET",
+                  url: "http://localhost:3000/tagstatistics/",
+                  success: (response) => {
+                        let jsonObj = JSON.parse(response);
+                        console.log(jsonObj);
+                        let colors = ["red", "orange", "yellow", "olive", "green", "teal", "blue", "violet", "brown", "grey", "pink"]
+                        let addHere = $(TAG_STATISTICS_ADD_HERE_SELECTOR)[0];
+                        addHere.innerHTML = "";
+                        for (let i = 0; i < jsonObj.length; i++) {
+                              let tag = jsonObj[i][0];
+                              let count = jsonObj[i][1];
+
+                              if (!tag || !count)
+                                    continue;
+
+                              // <div class="red statistic">
+                              // 	<div class="value">
+                              // 		27
+                              // 	</div>
+                              // 	<div class="label">Red </div>
+                              // </div>
+
+                              let labelDiv = document.createElement("div");
+                              labelDiv.classList.add("label");
+                              labelDiv.innerText = tag;
+
+                              let valueDiv = document.createElement("div");
+                              valueDiv.classList.add("value");
+                              valueDiv.innerText = count;
+
+                              let statisticsDiv = document.createElement("div");
+                              statisticsDiv.classList.add(colors[i % colors.length])
+                              statisticsDiv.classList.add("statistic");
+
+                              statisticsDiv.appendChild(valueDiv);
+                              statisticsDiv.appendChild(labelDiv);
+
+                              addHere.appendChild(statisticsDiv);
+                        }
+                        $(TAG_STATISTICS_MODAL_SELECTOR).modal('setting', 'transition', "vertical flip").modal("show");
+                  }
+            })
+      }
 
       let opUploadImage = (e) => {
             e.preventDefault();
@@ -20,7 +73,7 @@ let main = () => {
                   //读取完成
                   reader.onload = function (e) {
                         let base64Image = e.target.result;
-                        let tags = $(UPLOAD_TAG_INPUT_SELECTOR)[i].val();
+                        let tags = $(UPLOAD_TAG_INPUT_SELECTOR).val();
                         console.log(tags);
                         let uploadData = {
                               image: base64Image,
@@ -89,7 +142,7 @@ let main = () => {
             $(UPLOAD_SELCETOR).click((e) => {
                   e.preventDefault();
                   $(UPLOAD_TAG_INPUT_SELECTOR).val("");
-                  $(MODAL_SELECTOR).modal('setting', 'transition', "vertical flip").modal("show");
+                  $(UPLOAD_MODAL_SELECTOR).modal('setting', 'transition', "vertical flip").modal("show");
             });
             $(UPLOAD_BUTTON_SELECTOR).on("change", (e) => {
                   opUploadImage(e);
@@ -97,6 +150,10 @@ let main = () => {
             $(SEARCH_ICON_SELECTOR).click((e) => {
                   e.preventDefault();
                   doSearch($(SEARCH_KEYWORD_SELECTOR).val());
+            })
+            $(TAG_STATISTICS_SELECTOR).click(e => {
+                  e.preventDefault();
+                  getTagStatistics();
             })
       }
 
