@@ -22,6 +22,11 @@ let main = () => {
   const MESSAGE_CONTENT_SELECTOR = ".ui.negative.message p"
   const MESSAGE_CLOSE_ICON_SELECTOR = ".ui.negative.message i"
 
+  const VERIFICATION_CODE_SELECTOR = "#verification-code"
+  const VERIFICATION_MODAL_SELECTOR = "#verification-modal";
+  const VERIFICATION_CODE_IMPUT_SELECTOR = "#verification-code-input";
+
+  const SUBMIT_VERIFICATION_CODE_BUTTON_SELECTOR = "#submit-verification-code-button";
 
   const USERNAMR_REGEX = /([a-z]|[A-Z]|[0-9]){5,20}/g;
   const PASSWORD_REGEX = /^[A-Za-z0-9]{6,16}$/;
@@ -29,11 +34,26 @@ let main = () => {
   let loginForm = $(LOGIN_FORM_SELECTOR);
   let signUpForm = $(SIGN_UP_FORM_SELECTOR);
 
+
   let enableSignupForm = () => {
     signUpForm.css({
       display: "block"
     });
   };
+  let changeVerificationCode = () => {
+    $(VERIFICATION_CODE_SELECTOR).attr({
+      src: "./verificationcode?" + Math.random()
+    });
+  }
+
+  let enableVerificationModal = () => {
+    changeVerificationCode();
+    $(VERIFICATION_CODE_IMPUT_SELECTOR).val("");
+    $(VERIFICATION_MODAL_SELECTOR).modal('setting', 'transition', "vertical flip").modal("show");
+  }
+  let disableVerificationModal = () => {
+    $(VERIFICATION_MODAL_SELECTOR).modal('setting', 'transition', "vertical flip").modal("hide");
+  }
 
   let disableSignupForm = () => {
     signUpForm.css({
@@ -207,11 +227,33 @@ let main = () => {
     }
   };
 
+  let submitVerification = () => {
+    console.log("find me bitch");
+    let actualCode = $(VERIFICATION_CODE_IMPUT_SELECTOR).val();
+    let temp = document.cookie.split(";");
+    let expectCode = "";
+    for (let cookie of temp) {
+      console.log(cookie);
+      if (cookie.indexOf("captcha") !== -1) {
+        expectCode = cookie.split("=")[1];
+      }
+    }
+    if (actualCode.toLowerCase() == expectCode) {
+      sendSigUp();
+      disableVerificationModal();
+      enableLoginForm();
+      disableSignupForm();
+    } else {
+      setErrorMessage("Verfication Fail", "Please Look Carefully")
+    }
+  }
+
   let setEventListenr = () => {
     $(TO_LOGIN_SELECTOR).click(e => {
       e.preventDefault();
       enableLoginForm();
       disableSignupForm();
+
     });
 
     $(TO_SIGN_UP_SELECTOR).click(e => {
@@ -227,7 +269,7 @@ let main = () => {
 
     $(SIGN_UP_CONFIRM_SELECTOR).click(e => {
       e.preventDefault();
-      sendSigUp();
+      enableVerificationModal();
     });
 
     $(LOGIN_PASSWORD_SELECTOR).on("input", e => {
@@ -253,6 +295,10 @@ let main = () => {
     $(MESSAGE_CLOSE_ICON_SELECTOR).click(e => {
       e.preventDefault();
       disableError();
+    });
+    $(SUBMIT_VERIFICATION_CODE_BUTTON_SELECTOR).click(e => {
+      e.preventDefault();
+      submitVerification();
     });
   };
 

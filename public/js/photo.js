@@ -16,6 +16,7 @@ let main = () => {
       let TAG_STATISTICS_MODAL_SELECTOR = "#tag-statistics-modal"
       let TAG_STATISTICS_ADD_HERE_SELECTOR = "#tag-statistics-add-here"
 
+
       let sortTagStastics = (obj) => {
             let retList = [];
             for (let i = 0; i < obj.length; i++) {

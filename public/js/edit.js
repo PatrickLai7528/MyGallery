@@ -803,20 +803,6 @@ let main = () => {
 			disableAllButtons();
 			enableFilterButton(e);
 		});
-		$("#logout-button").click(function () {
-			$.ajax({
-				url: "http://localhost:3000/logout",
-				type: "GET",
-				success: function (response) {
-					response = JSON.parse(response);
-					console.log(response);
-					if (response.isValid) {
-						document.cookie = "token=" + response.token + ";";
-						$(location).attr('href', '/');
-					}
-				}
-			})
-		})
 	};
 
 	let getImage = () => {

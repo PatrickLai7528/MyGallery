@@ -5,6 +5,7 @@ import UserService from "./service/UserService";
 import { Request, Response, Router } from "express";
 import Image from "./entity/Image";
 import TagStatistics from "./entity/TagStatistics";
+import VerificationService from "./service/VerificationService";
 const jwt = require("jsonwebtoken");
 const secret = "SUPER_GALLERY";
 const fs = require("fs");
@@ -12,7 +13,7 @@ const router: Router = Router();
 
 const userService = new UserService();
 const imageService = new ImageService();
-
+const verificationService = new VerificationService();
 /**
  * @param {Request} req
  * @param {Response} res
@@ -237,6 +238,19 @@ router.get(
             .catch(e => {
                 res.end(JSON.stringify(e));
             });
+    }
+);
+
+router.get(
+    "/verificationcode/",
+    BodyParser.json(),
+    (req: Request, res: Response) => {
+        let code = verificationService.getCode();
+        let session = code.text.toLowerCase();
+        res.cookie("captcha", session);
+        res.setHeader("Content-Type", "image/svg+xml");
+        res.write(String(code.data));
+        res.end();
     }
 );
 export default router;
