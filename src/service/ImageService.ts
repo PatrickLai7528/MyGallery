@@ -4,6 +4,7 @@ import Database from "./../data/DataBase";
 import DataStore from "../data/DataStore";
 import Image from "../entity/Image";
 import TagStatistics from "../entity/TagStatistics";
+import AIService from './AIService';
 // let request = require("request");
 // let hashlib = require("hashlib");
 // let urllib = require("urllib");
@@ -16,7 +17,7 @@ import TagStatistics from "../entity/TagStatistics";
 export default class ImageService {
   private database: Database | null;
   private fileBasePath: string | null;
-
+  private aIService: AIService;
   /**
    *Creates an instance of ImageService.
    * @memberof ImageService
@@ -25,6 +26,7 @@ export default class ImageService {
     this.database = null;
     this.fileBasePath = "";
     let database = DataStore.getInstance().get("database");
+    this.aIService = new AIService();
     if (database) this.database = database;
     else {
       Database.connect().then(database => {
@@ -68,7 +70,7 @@ export default class ImageService {
     let imageName =
       this.fileBasePath + "/" + this.hashImageName(base64Image) + ".png";
     return new Promise((resolve, reject) => {
-      // this.imageToText(base64Image);
+      this.aIService.tagOf(base64Image);
       // write to file
       fs.writeFile(imageName, dataBuffer, err => {
         if (err) {

@@ -5,12 +5,15 @@ import UserService from "./service/UserService";
 import { Request, Response, Router } from "express";
 import Image from "./entity/Image";
 import TagStatistics from "./entity/TagStatistics";
+import WeatherService from "./service/WeatherService";
 const jwt = require("jsonwebtoken");
 const secret = "SUPER_GALLERY";
 const fs = require("fs");
 const router: Router = Router();
+
 const userService = new UserService();
 const imageService = new ImageService();
+const weatherService = new WeatherService("U44148E02B", "uozhik5x6jgiumgn");
 
 /**
  * @param {Request} req
@@ -193,6 +196,17 @@ router.get(
       });
   }
 );
+
+router.get("/nowweather/", BodyParser.json(), (req: Request, res: Response) => {
+  weatherService
+    .getNowWeather("nanjing")
+    .then(response => {
+      res.end(JSON.stringify(response));
+    })
+    .catch(e => {
+      res.end(JSON.stringify(e));
+    });
+});
 
 router.get(
   "/showimage/:imagePath",
