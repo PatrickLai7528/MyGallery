@@ -16,6 +16,25 @@ let main = () => {
       let TAG_STATISTICS_MODAL_SELECTOR = "#tag-statistics-modal"
       let TAG_STATISTICS_ADD_HERE_SELECTOR = "#tag-statistics-add-here"
 
+      let sortTagStastics = (obj) => {
+            let retList = [];
+            for (let i = 0; i < obj.length; i++) {
+                  let tag = obj[i][0];
+                  let count = obj[i][1];
+                  if (!tag || !count)
+                        continue;
+                  retList.push({
+                        tag: tag,
+                        count: count
+                  })
+            }
+            retList.sort((a, b) => {
+                  return b.count - a.count;
+            })
+            console.log(retList);
+            return retList;
+      }
+
       let getTagStatistics = () => {
             $.ajax({
                   type: "GET",
@@ -25,22 +44,24 @@ let main = () => {
                         console.log(jsonObj);
                         let colors = ["red", "orange", "yellow", "olive", "green", "teal", "blue", "violet", "brown", "grey", "pink"]
                         let addHere = $(TAG_STATISTICS_ADD_HERE_SELECTOR)[0];
+                        let tagList = sortTagStastics(jsonObj);
                         addHere.innerHTML = "";
-                        for (let i = 0; i < jsonObj.length; i++) {
-                              let tag = jsonObj[i][0];
-                              let count = jsonObj[i][1];
+                        for (let i = 0; i < tagList.length; i++) {
+                              let tag = tagList[i];
+                              // let tag = jsonObj[i][0];
+                              // let count = jsonObj[i][1];
 
-                              if (!tag || !count)
-                                    continue;
+                              // if (!tag || !count)
+                              // continue;
 
                               let labelDiv = document.createElement("div");
                               labelDiv.classList.add("label");
                               labelDiv.setAttribute("style", "font-family: Microsoft JhengHei, monospace;")
-                              labelDiv.innerText = tag;
+                              labelDiv.innerText = tag.tag;
 
                               let valueDiv = document.createElement("div");
                               valueDiv.classList.add("value");
-                              valueDiv.innerText = count;
+                              valueDiv.innerText = tag.count;
 
                               let statisticsDiv = document.createElement("div");
                               statisticsDiv.classList.add(colors[i % colors.length])
@@ -78,6 +99,10 @@ let main = () => {
                               type: "POST",
                               data: {
                                     data: JSON.stringify(uploadData)
+                              },
+                              success: (response) => {
+                                    console.log(response);
+                                    reloadImage();
                               }
                         });
                   };
@@ -98,9 +123,9 @@ let main = () => {
       }
 
       let doSearch = (keyword) => {
-            if (!keyword || keyword == "") {
-                  showAll();
-            }
+            // if (!keyword || keyword == "") {
+            showAll();
+            // }
             console.log(keyword);
             let jqImageArticles = $(IMAGE_ARTICLE_SELECTOR);
             for (let i = 0; i < jqImageArticles.length; i++) {
@@ -156,6 +181,27 @@ let main = () => {
             })
       }
 
+      let addOneImage = (addHere, src, tags, h1Id, imageId) => {
+            let article = document.createElement("article");
+            let img = document.createElement("img");
+            let h1 = document.createElement("h1");
+            h1.classList.add("article-title");
+            h1.innerHTML = tags
+            h1.setAttribute("id", h1Id);
+            img.setAttribute("id", imageId);
+            img.setAttribute("src", src);
+            img.classList.add("article-img");
+            article.appendChild(img);
+            article.appendChild(h1);
+            addHere.appendChild(article);
+      }
+
+      let reloadImage = () => {
+            let $section = $(IMAGE_SECTION_SELECTOR)[0];
+            $section.innerHTML = "";
+            getImage();
+      }
+
       let getImage = () => {
             // get image from backend
             $.ajax({
@@ -168,18 +214,11 @@ let main = () => {
                         let $section = $(IMAGE_SECTION_SELECTOR)[0];
                         console.log($section);
                         for (let i = 0; i < imageList.length; i++) {
-                              let article = document.createElement("article");
-                              let img = document.createElement("img");
-                              let h1 = document.createElement("h1");
-                              h1.classList.add("article-title");
-                              h1.innerHTML = imageList[i].tags;
-                              h1.setAttribute("id", "img-tag-" + (10 + i));
-                              img.setAttribute("id", "img-" + (10 + i));
-                              img.setAttribute("src", "./showimage/" + imageList[i].path.replace("./upload_images/", ""));
-                              img.classList.add("article-img");
-                              article.appendChild(img);
-                              article.appendChild(h1);
-                              $section.appendChild(article);
+                              let tags = imageList[i].tags
+                              let src = "./showimage/" + imageList[i].path.replace("./upload_images/", "")
+                              let h1Id = "img-tag-" + (1 + i);
+                              let imageId = "img-" + (1 + i);
+                              addOneImage($section, src, tags, h1Id, imageId);
                         }
                         $('img').click(function () {
                               localStorage['imgSrc'] = this.src;
@@ -190,40 +229,6 @@ let main = () => {
 
       }
 
-      let getWeather = () => {
-            // /******** 本示例仅做开发参考使用，不建议在生产环境下暴露 key！ ********/
-            // var UID = "U44148E02B"; // 测试用 用户ID，请更换成您自己的用户ID
-            // var KEY = "uozhik5x6jgiumgn"; // 测试用key，请更换成您自己的 Key
-            // var API = "http://api.seniverse.com/v3/weather/now.json"; // 获取天气实况
-            // var LOCATION = "beijing"; // 除拼音外，还可以使用 v3 id、汉语等形式
-            // // 获取当前时间戳
-            // var ts = Math.floor((new Date()).getTime() / 1000);
-            // // 构造验证参数字符串
-            // var str = "ts=" + ts + "&uid=" + UID;
-            // // 使用 HMAC-SHA1 方式，以 API 密钥（key）对上一步生成的参数字符串（raw）进行加密
-            // // 并将加密结果用 base64 编码，并做一个 urlencode，得到签名 sig
-            // var sig = CryptoJS.HmacSHA1(str, KEY).toString(CryptoJS.enc.Base64);
-            // sig = encodeURIComponent(sig);
-            // str = str + "&sig=" + sig;
-            // var jsonpCallback = function (data) {
-            //       var obj = document.getElementById('content');
-            //       var weather = data.results[0];
-            //       var text = [];
-            //       text.push("Location: " + weather.location.path);
-            //       text.push("Weather: " + weather.now.text);
-            //       text.push("Temperature: " + weather.now.temperature);
-            //       obj.innerText = text.join("\n");
-            // }
-            // // 构造最终请求的 url
-            // var url = API + "?location=" + LOCATION + "&" + str + "&callback=jsonpCallback";
-            // // 向 HTML 中动态插入 script 标签，通过 JSONP 的方式进行调用
-            // var newScript = document.createElement('script');
-            // newScript.type = 'text/javascript';
-            // newScript.src = url;
-            // $('body').append(newScript);
-      }
-
       getImage();
       setEventListener();
-      getWeather();
 }

@@ -1,7 +1,7 @@
 let main = () => {
 	/*========圖片相關的常量========*/
-	const DEFAULT_IMAGE_SRC = "./../images/1.jpg";
-	const IMAGES_NUM = 9;
+	let DEFAULT_IMAGE_SRC = "./../images/1.jpg";
+	let IMAGES_NUM = 9;
 	const DEFAULT_IMAGE_OFFSET = {
 		x: 0,
 		y: 0
@@ -648,61 +648,6 @@ let main = () => {
 		}
 	};
 
-	let opUploadImage = (e) => {
-		e.preventDefault();
-		//判断是否支持FileReader
-		let selectedFiles = $('#op-upload')[0].files;
-		let uploadOneImage = (selectedFile) => {
-			let reader = new FileReader();
-			//读取完成
-			reader.onload = function (e) {
-				let base64Image = e.target.result;
-				insertImage(base64Image);
-				// $.post("http://127.0.0.1:3000/upload/image", {
-				// 	image: base64Image
-				// })
-				$.ajax({
-					url: "http://localhost:3000/upload/image",
-					type: "POST",
-					data: {
-						image: base64Image
-					}
-				});
-			};
-			reader.readAsDataURL(selectedFile);
-		}
-
-		for (let selectedFile of selectedFiles) {
-			console.log("upload " + selectedFile);
-			uploadOneImage(selectedFile);
-		}
-	};
-
-	let insertImage = (base64Image) => {
-		let thumbnailList = $(".thumbnail-list")[0];
-		let thumbnailItems = $(".thumbnail-item");
-		// console.log(thumbnailList.innerHTML);
-		let imageNumber = thumbnailItems.length + 1;
-		let newLi = document.createElement("li");
-		newLi.classList.add("thumbnail-item");
-		let newA = document.createElement("a");
-		newA.setAttribute("id", imageNumber);
-		newA.setAttribute("href", base64Image);
-		let newImg = document.createElement("img");
-		newImg.classList.add("thumbnail-image");
-		newImg.setAttribute("src", base64Image);
-
-		newA.appendChild(newImg);
-		newLi.appendChild(newA);
-
-
-		thumbnailList.appendChild(newLi);
-		console.log(thumbnailList.innerHTML)
-		$('#' + imageNumber).click((e) => {
-			let imageSrc = $(".thumbnail-image")[imageNumber - 1].src;
-			onImageChange(e, imageSrc);
-		});
-	};
 
 	let disableAllButtons = () => {
 		// console.log(this);
@@ -720,22 +665,18 @@ let main = () => {
 		}
 	};
 
+
 	let setEventListener = () => {
-		for (let i = 1; i <= IMAGES_NUM; i++) {
-			let id = i - 1;
-			$('#' + i).click((e) => {
-				let imageSrc = $(".thumbnail-image")[id].src;
-				onImageChange(e, imageSrc)
-			});
-		}
 		$("#op-bigger").click((e) => {
 			beforeOperationStart();
+			disableAllButtons();
 			enableMoveButtons("image");
 			opBigger(e);
 			afterOperationEnd();
 		});
 		$("#op-smaller").click((e) => {
 			beforeOperationStart();
+			disableAllButtons();
 			enableMoveButtons("image");
 			opSmaller(e);
 			afterOperationEnd();
@@ -743,6 +684,7 @@ let main = () => {
 		$("#op-text").click((e) => {
 			beforeOperationStart();
 			opText(e);
+			disableAllButtons();
 			enableMoveButtons("text");
 			afterOperationEnd();
 		});
@@ -832,6 +774,7 @@ let main = () => {
 		});
 		$("#op-composition").click((e) => {
 			beforeOperationStart();
+			disableAllButtons();
 			enableMoveButtons("composition");
 			opComposition(e);
 			afterOperationEnd();
@@ -857,12 +800,8 @@ let main = () => {
 			afterOperationEnd();
 		});
 		$("#op-filter").click((e) => {
+			disableAllButtons();
 			enableFilterButton(e);
-		});
-		$("#op-upload").on("change", (e) => {
-			beforeOperationStart();
-			opUploadImage(e);
-			afterOperationEnd();
 		});
 		$("#logout-button").click(function () {
 			$.ajax({
@@ -880,7 +819,58 @@ let main = () => {
 		})
 	};
 
+	let getImage = () => {
+		// get image from backend
+		$.ajax({
+			type: "GET",
+			url: "http://localhost:3000/images",
+			success: function (response) {
+				console.log(response);
+				let imageList = JSON.parse(response);
+				console.log(imageList);
+				let $section = $(".thumbnail-list")[0];
+				console.log($section);
+				for (let i = 0; i < imageList.length; i++) {
+					/*
+					<li class="thumbnail-item">
+						<a id="1" href="./../images/1.jpg">
+							<img class="thumbnail-image" src="./../images/1.jpg" alt="Barry the Otter">
+						</a>
+					</li>
+					*/
+					let li = document.createElement("li");
+					li.classList.add("thumbnail-item");
+
+					let a = document.createElement("a");
+					a.setAttribute("id", (1 + i));
+					a.setAttribute("href", ("./showimage/" + imageList[i].path.replace("./upload_images/", "")));
+
+					let img = document.createElement("img");
+					img.classList.add("thumbnail-image");
+					img.setAttribute("src", ("./showimage/" + imageList[i].path.replace("./upload_images/", "")));
+
+					li.appendChild(a);
+					a.appendChild(img);
+					$section.appendChild(li);
+				}
+
+				IMAGES_NUM = imageList.length;
+				DEFAULT_IMAGE_SRC = "./showimage/" + imageList[0].path.replace("./upload_images/", "")
+				for (let i = 1; i <= IMAGES_NUM; i++) {
+					let id = i - 1;
+					$('#' + i).click((e) => {
+						console.log("clicking " + i)
+						let imageSrc = $(".thumbnail-image")[id].src;
+						onImageChange(e, imageSrc)
+					});
+				}
+				drawImage(DEFAULT_IMAGE_SRC);
+			}
+		})
+
+	}
+
+	getImage();
 	disableAllButtons();
-	drawImage(DEFAULT_IMAGE_SRC);
 	setEventListener()
 };
